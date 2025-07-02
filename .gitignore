@@ -1,0 +1,57 @@
+# 项目生成的本地任务文件
+tasks.json
+
+# Rust编译产物
+/target/
+**/*.rs.bk
+
+# Cargo相关
+Cargo.lock
+
+# IDE相关文件
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统相关
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# 环境变量文件
+.env
+.env.local
+.env.*.local
+
+# 备份文件
+*.bak
+*.backup
+
+# 项目特定文件（根据需要调整）
+# tasks.json  # 如果你不想提交任务数据文件，可以取消注释这行
+
+# 测试覆盖率报告
+tarpaulin-report.html
+
+# Flamegraph
+flamegraph.svg
+perf.data*
+
+# 文档生成
+/doc/
+
+# 本地配置
+config.local.*
