@@ -15,22 +15,48 @@ jobs:
     strategy:
       matrix:
         include:
+          # CLI 版本
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
+            bin: todolist-cli
             artifact_name: todolist-cli
             asset_name: todolist-cli-linux-x86_64
           - os: windows-latest
             target: x86_64-pc-windows-msvc
+            bin: todolist-cli
             artifact_name: todolist-cli.exe
             asset_name: todolist-cli-windows-x86_64.exe
           - os: macos-latest
             target: x86_64-apple-darwin
+            bin: todolist-cli
             artifact_name: todolist-cli
             asset_name: todolist-cli-macos-x86_64
           - os: macos-latest
             target: aarch64-apple-darwin
+            bin: todolist-cli
             artifact_name: todolist-cli
             asset_name: todolist-cli-macos-arm64
+          # GUI 版本
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            bin: todolist-gui
+            artifact_name: todolist-gui
+            asset_name: todolist-gui-linux-x86_64
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bin: todolist-gui
+            artifact_name: todolist-gui.exe
+            asset_name: todolist-gui-windows-x86_64.exe
+          - os: macos-latest
+            target: x86_64-apple-darwin
+            bin: todolist-gui
+            artifact_name: todolist-gui
+            asset_name: todolist-gui-macos-x86_64
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            bin: todolist-gui
+            artifact_name: todolist-gui
+            asset_name: todolist-gui-macos-arm64
 
     steps:
     - name: Checkout code
@@ -43,11 +69,19 @@ jobs:
         target: ${{ matrix.target }}
         override: true
 
+    # 为Linux GUI版本安装依赖
+    - name: Install GUI dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest' && matrix.bin == 'todolist-gui'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgtk-3-dev libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev
+
+    # 构建指定的二进制文件
     - name: Build
       uses: actions-rs/cargo@v1
       with:
         command: build
-        args: --release --target ${{ matrix.target }}
+        args: --release --target ${{ matrix.target }} --bin ${{ matrix.bin }}
 
     - name: Prepare artifact
       shell: bash
@@ -69,7 +103,13 @@ jobs:
     name: Create Release
     needs: build
     runs-on: ubuntu-latest
+    # 确保只有在推送标签时才创建发布
     if: startsWith(github.ref, 'refs/tags/')
+    
+    # 添加权限配置
+    permissions:
+      contents: write
+      packages: write
     
     steps:
     - name: Checkout code

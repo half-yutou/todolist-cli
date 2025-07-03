@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 use crate::task::Task;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)] // 添加Clone
 pub struct TaskList {
     pub name: String, 
     pub tasks: Vec<Task>,
